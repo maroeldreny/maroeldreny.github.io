@@ -73,4 +73,80 @@
         });
         update();
     }
+
+    // ===== Animations: page transitions + scroll reveal =====
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var shell = document.querySelector('.maro-shell');
+
+    // Smooth transition between pages when tapping the bottom tab bar.
+    // Internal pages only — wa.me / tel: links are left untouched.
+    if (shell && !reducedMotion) {
+        document.querySelectorAll('.maro-tabbar a.maro-tab').forEach(function (tab) {
+            var href = tab.getAttribute('href') || '';
+            if (!/\.html($|[?#])/.test(href)) return;
+            tab.addEventListener('click', function (e) {
+                if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                if (tab.getAttribute('aria-current') === 'page') { e.preventDefault(); return; }
+                e.preventDefault();
+                shell.classList.add('maro-page-exit');
+                setTimeout(function () { window.location.href = href; }, 180);
+            });
+        });
+        // If the browser restores this page from the back/forward cache,
+        // undo the exit state so the page is visible again.
+        window.addEventListener('pageshow', function (e) {
+            if (e.persisted) shell.classList.remove('maro-page-exit');
+        });
+    }
+
+    // Scroll-reveal: cards, offers, steps, reviews and section titles
+    // fade/rise in as they enter the viewport, with a light stagger.
+    if (!reducedMotion && 'IntersectionObserver' in window) {
+        var revealSelectors = [
+            '.file-group-label',
+            '.file-group-heading',
+            '.maro-bf',
+            '.maro-offer',
+            '.maro-service',
+            '.maro-heritage',
+            '.maro-steps',
+            '.maro-step',
+            '.maro-rating-summary',
+            '.maro-review',
+            '.maro-partners',
+            '.maro-branch',
+            '.maro-form',
+            '.maro-contact',
+            '.file-callout',
+            '.file-caption',
+            '.file-closing'
+        ];
+        var revealEls = [];
+        revealSelectors.forEach(function (sel) {
+            document.querySelectorAll(sel).forEach(function (el) {
+                // the first section's main title already has its own entrance animation
+                if (el.matches('.file-group:first-of-type .file-group-heading')) return;
+                if (revealEls.indexOf(el) === -1) revealEls.push(el);
+            });
+        });
+        if (revealEls.length) {
+            document.documentElement.classList.add('maro-anim');
+            revealEls.forEach(function (el) { el.setAttribute('data-maro-reveal', ''); });
+            var observer = new IntersectionObserver(function (entries) {
+                var batch = entries.filter(function (en) { return en.isIntersecting; });
+                if (!batch.length) return;
+                batch.sort(function (a, b) {
+                    var ra = a.target.getBoundingClientRect();
+                    var rb = b.target.getBoundingClientRect();
+                    return (ra.top - rb.top) || (ra.left - rb.left);
+                });
+                batch.forEach(function (entry, i) {
+                    entry.target.style.transitionDelay = Math.min(i * 70, 350) + 'ms';
+                    entry.target.classList.add('maro-revealed');
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+            revealEls.forEach(function (el) { observer.observe(el); });
+        }
+    }
 })();
