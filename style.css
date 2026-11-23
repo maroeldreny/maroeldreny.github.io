@@ -254,24 +254,20 @@ body {
 /* Bottom tab bar — native fixed bar on real hosting */
 .maro-tabbar {
   position: fixed;
-  z-index: 50;
-  bottom: 16px;
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  /* On narrow screens the host's corner badge (bottom-right, ~192x64) would cover
-     the bar's right end, so the bar rides above it. */
-  left: 50%;
-  transform: translateX(-50%);
+  z-index: 1000;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   gap: 4px;
-  width: min(640px, calc(100% - 32px));
+  width: 100%;
   margin: 0;
-  background: rgba(255, 255, 255, .94);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--ds-hairline);
-  border-radius: 22px;
-  box-shadow: 0 10px 30px rgba(28, 13, 14, .14);
-  padding: 6px;
+  background: rgba(255, 255, 255, .98);
+  border: 0;
+  border-top: 1px solid var(--ds-hairline);
+  border-radius: 0;
+  box-shadow: 0 -3px 16px rgba(28, 13, 14, .08);
+  padding: 6px max(6px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px));
 }
 .maro-tab {
   flex: 1;
@@ -292,7 +288,4 @@ body {
 .maro-tab[aria-current="page"] { color: #EA1819; background: #fdecec; }
 .maro-tab-wa { color: #EA1819; }
 
-@media (max-width: 860px) {
-  .maro-tabbar { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
-  .maro-shell { padding-bottom: 160px; }
-}
+.maro-shell { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
