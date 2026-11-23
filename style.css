@@ -289,3 +289,47 @@ body {
 .maro-tab-wa { color: #EA1819; }
 
 .maro-shell { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+
+/* ===== Animations: page transitions, tab feedback, scroll reveal ===== */
+
+/* Page entrance: the whole shell rises and fades in on load */
+@keyframes maro-page-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .maro-shell { animation: maro-page-in .38s cubic-bezier(.2, .7, .3, 1) both; }
+}
+
+/* Page exit: applied by JS right before following a tab-bar link */
+.maro-shell.maro-page-exit {
+  animation: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* Tab press feedback */
+.maro-tab { transition: background .15s ease, color .15s ease, transform .12s ease; }
+.maro-tab:active { transform: scale(.93); }
+
+/* Scroll reveal: hidden state only exists when JS enabled it (html.maro-anim),
+   so no-JS and reduced-motion visitors always see full content. */
+html.maro-anim [data-maro-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(.2, .7, .3, 1);
+}
+html.maro-anim [data-maro-reveal].maro-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect reduced motion for the looping decorations too */
+@media (prefers-reduced-motion: reduce) {
+  .maro-count-cell,
+  .maro-offer,
+  .maro-offer::after,
+  .maro-offer-badge,
+  .maro-partners-track { animation: none; }
+}
