@@ -1,0 +1,298 @@
+/* Maro Eldreny static site — adapted from the Instinct File styles.
+   Component primitives (file-group, TextField, ChoiceRow, Callout, Caption,
+   Closing) re-implemented as plain CSS. Tab bar is a native fixed bar. */
+
+:root {
+  --ds-ink: #1c0d0e;
+  --ds-ink-2: #73605f;
+  --ds-hairline: #eadfd9;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  color: var(--ds-ink);
+  background-color: #fdf3ee;
+  background-image:
+    radial-gradient(rgba(234, 24, 25, .10) 1.6px, transparent 2.2px),
+    radial-gradient(rgba(28, 13, 14, .055) 1.6px, transparent 2.2px),
+    radial-gradient(rgba(0, 148, 160, .045) 1.4px, transparent 2px);
+  background-size: 22px 22px, 22px 22px, 34px 34px;
+  background-position: 0 0, 11px 11px, 5px 23px;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Page shell */
+.maro-shell {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 24px 112px; /* bottom padding clears the fixed tab bar */
+  background-image:
+    radial-gradient(760px 420px at 50% -120px, rgba(234, 24, 25, .11), transparent 70%);
+  background-repeat: no-repeat;
+}
+@media (min-width: 768px) {
+  .maro-shell { padding: 24px 40px 120px; }
+}
+
+/* Component primitives */
+.file-group { margin: 28px 0 0; }
+.file-group-label { display: block; font-size: 12px; font-weight: 700; color: var(--ds-ink-2); margin-bottom: 4px; }
+.file-group-heading { font-size: 20px; font-weight: 800; margin: 0 0 14px; letter-spacing: -0.01em; }
+.file-caption { font-size: 12px; line-height: 20px; color: var(--ds-ink-2); margin: 10px 0 0; }
+.file-paragraph { font-size: 14px; line-height: 24px; margin: 0 0 10px; }
+.file-callout { border: 1px solid var(--ds-hairline); border-radius: 16px; padding: 14px 16px; background: rgba(255,255,255,.7); margin-top: 14px; }
+.file-callout-title { display: block; font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+.file-callout-body { font-size: 13px; line-height: 21px; color: var(--ds-ink-2); margin: 0; }
+.file-closing { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--ds-hairline); font-size: 12px; line-height: 20px; color: var(--ds-ink-2); text-align: center; }
+
+/* Form primitives */
+.maro-field { display: flex; flex-direction: column; gap: 6px; }
+.maro-field-label { font-size: 13px; font-weight: 700; }
+.maro-field-input {
+  font: inherit;
+  font-size: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--ds-hairline);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ds-ink);
+  outline: none;
+}
+.maro-field-input:focus { border-color: #EA1819; box-shadow: 0 0 0 3px rgba(234,24,25,.12); }
+.maro-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.maro-choice {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ds-hairline);
+  background: #fff;
+  color: var(--ds-ink);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.maro-choice:hover { border-color: #EA1819; color: #EA1819; }
+.maro-choice[aria-pressed="true"] { background: #EA1819; border-color: #EA1819; color: #fff; }
+
+/* Page main titles: brand red, bold, tasteful entrance */
+.file-group:first-of-type .file-group-heading {
+  color: #EA1819;
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  animation: maro-pt-in .7s cubic-bezier(.2, .7, .3, 1) both;
+}
+@media (min-width: 768px) {
+  .file-group:first-of-type .file-group-heading { font-size: 30px; }
+}
+.file-group:first-of-type .file-group-heading::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 4px;
+  border-radius: 999px;
+  background: #EA1819;
+  margin-top: 6px;
+  transform-origin: right center;
+  animation: maro-pt-underline .7s cubic-bezier(.2, .7, .3, 1) .3s both;
+}
+@keyframes maro-pt-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes maro-pt-underline {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .file-group:first-of-type .file-group-heading,
+  .file-group:first-of-type .file-group-heading::after,
+  .maro-title { animation: none; }
+}
+
+.maro-hero { text-align: center; padding: 20px 0 8px; }
+.maro-logo {
+  height: 76px; width: auto; margin: 0 auto; display: block;
+  filter: drop-shadow(0 6px 14px rgba(234, 24, 25, .22));
+  animation: maro-logo-in .9s cubic-bezier(.2, .7, .3, 1) both, maro-logo-float 5.5s ease-in-out 1.1s infinite;
+}
+@keyframes maro-logo-in {
+  from { opacity: 0; transform: translateY(12px) scale(.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes maro-logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .maro-logo { animation: none; }
+}
+.maro-title { font-size: 30px; font-weight: 800; margin: 14px 0 2px; color: #EA1819; letter-spacing: -0.02em; animation: maro-pt-in .8s cubic-bezier(.2, .7, .3, 1) .15s both; }
+.maro-tagline { font-size: 20px; font-weight: 800; color: #EA1819; margin: 0 0 8px; }
+.maro-sub { font-size: 14px; line-height: 24px; color: var(--ds-ink-2); margin: 0 auto 14px; max-width: 46ch; }
+.maro-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; }
+.maro-chip { font-size: 12px; font-weight: 700; color: #EA1819; background: #fdecec; border: 1px solid #f6c9ca; padding: 6px 12px; border-radius: 999px; }
+
+.maro-cta-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.maro-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 24px; border-radius: 999px; font-weight: 800; font-size: 15px; text-decoration: none; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.maro-btn:hover { transform: translateY(-1px); }
+.maro-btn-primary { background: #EA1819; color: #fff; box-shadow: 0 8px 20px rgba(234, 24, 25, .32); }
+.maro-btn-ghost { background: #fff; color: #EA1819; border: 1.5px solid #EA1819; }
+.maro-btn-light { background: #fff; color: #1c0d0e; }
+.maro-btn-block { display: flex; width: 100%; margin-top: 6px; }
+
+/* Black Friday */
+.maro-bf { background: linear-gradient(165deg, #160b0c 0%, #2b0e11 55%, #3d1013 100%); border-radius: 20px; padding: 22px 18px; color: #fff; }
+.maro-bf-lead { font-weight: 700; margin: 0 0 12px; text-align: center; color: #ffd9da; }
+.maro-count { display: flex; gap: 10px; justify-content: center; margin-bottom: 18px; }
+.maro-count-cell { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: 14px; padding: 10px 0; width: 68px; text-align: center; animation: maro-pulse 2.2s ease-in-out infinite; }
+.maro-count-cell:nth-child(2) { animation-delay: .15s; }
+.maro-count-cell:nth-child(3) { animation-delay: .3s; }
+.maro-count-cell:nth-child(4) { animation-delay: .45s; }
+.maro-count-num { display: block; font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.maro-count-label { font-size: 11px; color: #f3b3b5; }
+.maro-count-live { text-align: center; font-weight: 800; font-size: 17px; padding: 14px; color: #ffd9da; }
+@keyframes maro-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(234,24,25,0); } 50% { box-shadow: 0 0 18px 2px rgba(234,24,25,.45); } }
+
+.maro-offers { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 768px) { .maro-offers { grid-template-columns: repeat(3, 1fr); } }
+.maro-offer { position: relative; background: rgba(255,255,255,.06); border: 1px solid rgba(234,24,25,.55); border-radius: 16px; padding: 20px 16px 16px; animation: maro-glow 3s ease-in-out infinite; overflow: hidden; }
+.maro-offer:nth-child(2) { animation-delay: .5s; }
+.maro-offer:nth-child(3) { animation-delay: 1s; }
+@keyframes maro-glow { 0%, 100% { box-shadow: 0 0 0 rgba(234,24,25,.0); } 50% { box-shadow: 0 0 26px rgba(234,24,25,.5); } }
+.maro-offer::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.14) 48%, transparent 62%); transform: translateX(-120%); animation: maro-shimmer 3.6s ease-in-out infinite; pointer-events: none; }
+@keyframes maro-shimmer { 0%, 55% { transform: translateX(-120%); } 90%, 100% { transform: translateX(120%); } }
+.maro-offer-badge { position: absolute; top: 12px; inset-inline-end: 12px; background: #EA1819; color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px; animation: maro-float 2.4s ease-in-out infinite; }
+@keyframes maro-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.maro-offer-title { font-size: 17px; font-weight: 800; margin: 26px 0 4px; }
+.maro-offer-price { font-size: 21px; font-weight: 800; color: #ff5a5e; margin: 0 0 10px; }
+.maro-offer-lines { margin: 0 0 14px; padding-inline-start: 18px; font-size: 13px; line-height: 22px; color: #f3dfe0; }
+
+/* Services */
+.maro-services { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .maro-services { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) { .maro-services { grid-template-columns: repeat(3, 1fr); } }
+.maro-service { border: 1px solid var(--ds-hairline); border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; background: #fff; }
+.maro-service-imgwrap { position: relative; }
+.maro-service-imgwrap img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+.maro-service-noimg { aspect-ratio: 4 / 3; background: linear-gradient(150deg, #fdecec, #fff 70%); display: flex; align-items: center; justify-content: center; }
+.maro-service-initial { font-size: 44px; font-weight: 800; color: #EA1819; opacity: .85; }
+.maro-price-chip { position: absolute; bottom: 10px; inset-inline-start: 10px; background: #EA1819; color: #fff; font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 999px; box-shadow: 0 4px 12px rgba(234,24,25,.4); }
+.maro-service-name { font-size: 16px; font-weight: 800; margin: 12px 14px 4px; }
+.maro-service-desc { font-size: 13px; line-height: 21px; color: var(--ds-ink-2); margin: 0 14px 10px; flex: 1; }
+.maro-service-cta { display: inline-block; margin: 0 14px 14px; font-size: 13px; font-weight: 800; color: #EA1819; text-decoration: none; }
+.maro-service-cta:hover { text-decoration: underline; }
+
+/* Heritage */
+.maro-heritage { display: grid; gap: 14px; grid-template-columns: 1fr; align-items: center; }
+@media (min-width: 768px) { .maro-heritage { grid-template-columns: 1fr 1.2fr; } }
+.maro-heritage img { width: 100%; border-radius: 18px; display: block; }
+
+/* Steps highlight */
+.maro-steps { position: relative; overflow: hidden; background: linear-gradient(160deg, #f13334 0%, #EA1819 45%, #bd0f11 100%); border-radius: 20px; padding: 20px 16px; color: #fff; box-shadow: 0 14px 32px rgba(234, 24, 25, .3); margin-bottom: 14px; }
+.maro-steps::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.14) 1px, transparent 1.6px); background-size: 22px 22px; pointer-events: none; }
+.maro-steps::after { content: ""; position: absolute; inset: 0; background: radial-gradient(420px 180px at 50% -60px, rgba(255,255,255,.22), transparent 70%); pointer-events: none; }
+.maro-steps-lead { position: relative; text-align: center; font-weight: 800; font-size: 15px; margin: 0 0 14px; color: #ffe1e2; }
+.maro-steps-list { position: relative; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.maro-step { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.24); border-radius: 16px; padding: 12px 14px; }
+.maro-step-num { flex: none; width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #EA1819; font-weight: 900; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,.2); font-variant-numeric: tabular-nums; }
+.maro-step-text { font-size: 14px; line-height: 22px; font-weight: 700; }
+@media (min-width: 768px) {
+  .maro-steps-list { flex-direction: row; }
+  .maro-step { flex: 1; }
+}
+
+/* Order form */
+.maro-form { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; border: 1px solid var(--ds-hairline); border-radius: 18px; padding: 16px; background: rgba(255, 255, 255, .82); }
+
+/* Reviews */
+.maro-rating-summary { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 18px 14px; margin-bottom: 14px; border-radius: 16px; background: #fdecec; }
+.maro-rating-num { font-size: 40px; font-weight: 900; color: #EA1819; line-height: 1; }
+.maro-rating-stars { font-size: 22px; color: #f5a623; letter-spacing: 3px; }
+.maro-rating-count { font-size: 12.5px; font-weight: 700; color: var(--ds-ink-2); text-align: center; }
+.maro-reviews { display: grid; gap: 12px; grid-template-columns: 1fr; margin-bottom: 10px; }
+@media (min-width: 768px) { .maro-reviews { grid-template-columns: repeat(3, 1fr); } }
+.maro-review { border: 1px solid var(--ds-hairline); border-radius: 16px; padding: 18px 16px; background: #fff; display: flex; flex-direction: column; }
+.maro-review-stars { display: block; font-size: 16px; color: #f5a623; letter-spacing: 2px; margin-bottom: 8px; }
+.maro-review-text { margin: 0 0 12px; font-size: 13.5px; line-height: 22px; color: var(--ds-ink); flex: 1; }
+.maro-review-name { display: block; font-size: 13px; font-weight: 800; }
+.maro-review-meta { display: block; font-size: 11.5px; color: var(--ds-ink-2); margin-top: 2px; }
+
+/* Partners marquee */
+.maro-partners { overflow: hidden; border-radius: 16px; border: 1px solid var(--ds-hairline); padding: 16px 0; background: rgba(255, 255, 255, .7); }
+.maro-partners-track { display: flex; gap: 14px; width: max-content; animation: maro-marquee 22s linear infinite; }
+@keyframes maro-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.maro-partner { min-width: 150px; text-align: center; padding: 18px 20px; border: 1.5px dashed #d9c4c5; border-radius: 14px; color: var(--ds-ink-2); font-size: 13px; font-weight: 700; background: #fdf7f6; }
+
+/* Branches */
+.maro-branches { display: grid; gap: 12px; grid-template-columns: 1fr; margin-bottom: 10px; }
+@media (min-width: 768px) { .maro-branches { grid-template-columns: repeat(3, 1fr); } }
+.maro-branch { border: 1px solid var(--ds-hairline); border-radius: 16px; padding: 16px; background: rgba(255, 255, 255, .82); }
+.maro-branch h3 { margin: 0 0 4px; font-size: 17px; font-weight: 800; }
+.maro-branch-tag { display: inline-block; font-size: 11px; font-weight: 800; color: #EA1819; background: #fdecec; padding: 3px 10px; border-radius: 999px; margin-bottom: 8px; }
+.maro-branch p { margin: 0 0 6px; font-size: 13px; line-height: 21px; }
+.maro-branch-note { color: var(--ds-ink-2); }
+
+/* Contact */
+.maro-contact { display: flex; flex-direction: column; gap: 14px; }
+.maro-contact-phones { display: flex; gap: 10px; flex-wrap: wrap; }
+.maro-socials { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.maro-socials a { width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid #EA1819; color: #EA1819; display: flex; align-items: center; justify-content: center; transition: background .15s ease, color .15s ease; }
+.maro-socials a:hover { background: #EA1819; color: #fff; }
+
+/* Bottom tab bar — native fixed bar on real hosting */
+.maro-tabbar {
+  position: fixed;
+  z-index: 50;
+  bottom: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  /* On narrow screens the host's corner badge (bottom-right, ~192x64) would cover
+     the bar's right end, so the bar rides above it. */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  width: min(640px, calc(100% - 32px));
+  margin: 0;
+  background: rgba(255, 255, 255, .94);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--ds-hairline);
+  border-radius: 22px;
+  box-shadow: 0 10px 30px rgba(28, 13, 14, .14);
+  padding: 6px;
+}
+.maro-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 2px;
+  border-radius: 16px;
+  color: var(--ds-ink-2);
+  text-decoration: none;
+  font-size: 10.5px;
+  font-weight: 700;
+  transition: background .15s ease, color .15s ease;
+}
+.maro-tab svg { width: 21px; height: 21px; }
+.maro-tab:hover { color: #EA1819; background: #fdecec; }
+.maro-tab[aria-current="page"] { color: #EA1819; background: #fdecec; }
+.maro-tab-wa { color: #EA1819; }
+
+@media (max-width: 860px) {
+  .maro-tabbar { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .maro-shell { padding-bottom: 160px; }
+}
