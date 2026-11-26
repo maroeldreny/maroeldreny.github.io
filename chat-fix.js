@@ -21,7 +21,7 @@ function patch(w){
     if(!waiting)return;
     var inp=card.querySelector('form input[name=text]'),f=card.querySelector('form');
     if(!inp||!f){waiting=false;btn.disabled=false;if(popup)popup.close();return}
-    var url=f.action+(f.action.indexOf('?')>-1?'&':'?')+'text='+encodeURIComponent(inp.value);
+    var uo=new URL(f.action);uo.searchParams.set('text',inp.value);var url=uo.href;
     waiting=false;btn.disabled=false;btn.textContent='أكد الطلب وافتح واتساب ↗';
     if(popup&&!popup.closed){popup.location.href=url}else{w.open(url,'_blank')}
   }
