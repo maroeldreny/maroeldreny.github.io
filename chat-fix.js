@@ -11,10 +11,22 @@ function patch(w){
   comp.parentNode.insertBefore(btn,comp);
   var msgs=d.getElementById('messages'),popup=null,waiting=false,t0=0;
   function show(ready){btn.classList.add('show');if(ready)btn.classList.add('ready')}
+  function fallback(users){
+    if(!waiting)return;
+    users=users.filter(function(t){return t&&t!=='أكد الطلب'});
+    waiting=false;btn.disabled=false;btn.textContent='أكد الطلب وافتح واتساب ↗';
+    if(!users.length){if(popup)popup.close();return}
+    var uo=new URL(d.querySelector('.chat-foot a').href);
+    uo.searchParams.set('text','أهلًا مطابع مارو الدريني، ده ملخص طلبي للمراجعة:\n\n'+users.join('\n')+'\n\nده طلب مراجعة، مش حجز مؤكد.');
+    if(popup&&!popup.closed){popup.location.href=uo.href}else{w.open(uo.href,'_blank')}
+  }
   var of=w.fetch;
   w.fetch=function(){
     var p=of.apply(this,arguments);
-    try{if(String(arguments[0]).indexOf('/api/chat')>-1){p.then(function(r){return r.clone().json()}).then(function(j){if(j&&!j.error){show(!!j.ready||!!j.handoff)}}).catch(function(){})}}catch(e){}
+    try{if(String(arguments[0]).indexOf('/api/chat')>-1){
+      var users=[].map.call(d.querySelectorAll('article.user'),function(a){return a.firstChild?a.firstChild.textContent:a.textContent});
+      p.then(function(r){return r.clone().json().then(function(j){return [r,j]})}).then(function(x){var j=x[1];if(j&&!j.error&&x[0].ok){show(!!j.ready||!!j.handoff)}else if(waiting){fallback(users)}}).catch(function(){if(waiting)fallback(users)});
+    }}catch(e){}
     return p;
   };
   function finish(card){
