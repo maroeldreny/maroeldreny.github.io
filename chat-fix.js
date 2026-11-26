@@ -54,7 +54,7 @@ function patch(w){
   d.getElementById('composer').addEventListener('submit',function(e){
     if(waiting)return;
     var ta=d.querySelector('textarea');
-    if(ta&&btn.classList.contains('show')&&isConfirm(ta.value)){e.preventDefault();e.stopImmediatePropagation();btn.onclick()}
+    if(ta&&btn.classList.contains('show')&&isConfirm(ta.value)){e.preventDefault();e.stopImmediatePropagation();setTimeout(function(){btn.onclick()},0)}
   },true);
   // show button once the first bot reply appears
   new MutationObserver(function(){if(msgs.querySelector('article.bot'))show(false)}).observe(msgs,{childList:true});
