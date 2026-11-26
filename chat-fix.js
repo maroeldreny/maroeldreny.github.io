@@ -47,6 +47,15 @@ function patch(w){
     d.getElementById('composer').requestSubmit();
     setTimeout(function(){if(waiting){waiting=false;btn.disabled=false;btn.textContent='أكد الطلب وافتح واتساب ↗';if(popup&&!popup.closed)popup.close()}},40000);
   };
+  function norm(x){return String(x||'').toLowerCase().replace(/[\u064B-\u065F\u0640]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[^\u0621-\u064Aa-z0-9? ؟]/g,' ').replace(/\s+/g,' ').trim()}
+  var YES=/(^| )(اكد[\u0621-\u064Aa-z]*|تاكيد[\u0621-\u064Aa-z]*|اشتغل[\u0621-\u064Aa-z]*|اشتغلي|نفذ[\u0621-\u064Aa-z]*|ثبت[\u0621-\u064Aa-z]*|اعتمد[\u0621-\u064Aa-z]*|وافق[\u0621-\u064Aa-z]*|موافق[\u0621-\u064Aa-z]*|كمل الطلب|كمل الاوردر|ابعت الطلب|ابعتو|confirm[\u0621-\u064Aa-z]*|go ahead|proceed)( |$)/;
+  var NO=/(^| )(لا|مش|ما|بلاش|الغي[\u0621-\u064Aa-z]*|الغاء|هل|ازاي|امتي|ليه|اي|ايه|كام|فين|لسه|قبل ما|لو)( |$)/;
+  function isConfirm(v){var n=norm(v);if(!n||n.length>45||/[?؟]/.test(n))return false;return YES.test(n)&&!NO.test(n)}
+  d.getElementById('composer').addEventListener('submit',function(e){
+    if(waiting)return;
+    var ta=d.querySelector('textarea');
+    if(ta&&btn.classList.contains('show')&&isConfirm(ta.value)){e.preventDefault();e.stopImmediatePropagation();btn.onclick()}
+  },true);
   // show button once the first bot reply appears
   new MutationObserver(function(){if(msgs.querySelector('article.bot'))show(false)}).observe(msgs,{childList:true});
   if(msgs.querySelector('article.bot'))show(false);
